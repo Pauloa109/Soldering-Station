@@ -1,0 +1,2 @@
+Display_Control=IQR,Back_Light,RST,DC
+SPI=MOSI,MISO,SCK,CS
