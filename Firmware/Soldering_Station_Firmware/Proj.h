@@ -7,7 +7,7 @@
 /** * @date      28/08/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 18/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 #ifndef __PROJ_H__
 #define __PROJ_H__
@@ -52,14 +52,18 @@ extern "C" {
 /* * System Configuration                                                             * */
 /* ************************************************************************************ */
 
-#define PROJECT_REDIRECT_PRINTF_ENABLE          (   0   )
+/* Enable logger function. */
+#define PROJECT_ENABLE_LOGGER                   ( DISABLED )
+
+/* Enable printf redirect. */
+#define PROJECT_REDIRECT_PRINTF_ENABLE          ( 0 )
 
 #if (PROJECT_REDIRECT_PRINTF_ENABLE == 1)
 
     /* Define Printf() Redirection Target Here. */
-    #define PROJECT_REDIRECT_PRINTF_TARGET      (   PROJECT_REDIRECT_PRINTF_TARGET_USB  )
+    #define PROJECT_REDIRECT_PRINTF_TARGET      ( PROJECT_REDIRECT_PRINTF_TARGET_USB )
 
-    //#define PROJECT_REDIRECT_PRINTF_TARGET      (   PROJECT_REDIRECT_PRINTF_TARGET_UART  )
+    //#define PROJECT_REDIRECT_PRINTF_TARGET    ( PROJECT_REDIRECT_PRINTF_TARGET_UART )
 #endif 
 
 
@@ -87,9 +91,9 @@ extern "C" {
 /* ************************************************************************************ */
 /* * UI Defines                                                                       * */
 /* ************************************************************************************ */
-#define UI_LCD_ENABLE                           (   ENABLE  )
+#define UI_LCD_ENABLE                           (   ENABLED  )
 
-#if (UI_LCD_ENABLE == ENABLE)
+#if (UI_LCD_ENABLE == ENABLED)
 
     #define UI_LCD_DRIVER                       (   UI_LCD_DRIVER_ST7789   )
 

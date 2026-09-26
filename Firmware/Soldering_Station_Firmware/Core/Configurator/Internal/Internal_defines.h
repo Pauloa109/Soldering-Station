@@ -1,5 +1,5 @@
 /** ********************************************************************************** **/
-/** * @file      Internal_defines.h                                                           * **/
+/** * @file      Internal_defines.h                                                  * **/
 /** * @brief     This file contains all the functions prototypes of                  * **/
 /** *            Defines.h.                                                          * **/
 /** * @author    Paulo Peixoto                                                       * **/
@@ -7,7 +7,7 @@
 /** * @date      17/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 18/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __INTERNAL_DEFINES_H__
@@ -17,6 +17,7 @@
 /* * Public Includes                                                                  * */
 /* ************************************************************************************ */
 
+/* Include Project Level Cofiguration Fille. */
 #include "Proj.h"
 
 /* TODO: Add includes. */

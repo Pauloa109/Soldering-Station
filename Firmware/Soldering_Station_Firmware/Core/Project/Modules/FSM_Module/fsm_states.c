@@ -7,16 +7,18 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V0.0.0                                                              * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
 /* * Private Includes                                                                 * */
 /* ************************************************************************************ */
 
+/* Inclue Header Fille. */
 #include "fsm_states.h"
-#include "Project/Modules/UI_Module/Ui.h"
-#include "Project/Modules/UI_Module/Ui_defines.h"
+
+/* Include Ui Module. */
+#include "Ui.h"
 
 /* TODO: Add includes. */
 
@@ -93,16 +95,18 @@
 
 et_FSM_state FSM_idle_state_handler(void)
 {
+    et_FSM_state next_state = idle_state;
+
     if (UI_encoder_c_but_get_logged_state() == BUTTON_PRESSED)
     {
         switch(UI_Get_SelectedChannel())
         {
             case 0:
                 UI_Draw_IronScreen();
-                return iron_state;
+                next_state = iron_state;
 
             case 1:
-                return gun_state;
+                next_state = gun_state;
                 break;
 
             default:
@@ -114,7 +118,7 @@ et_FSM_state FSM_idle_state_handler(void)
 
     UI_Refresh_SelectedChannel();
 
-    return idle_state;
+    return next_state;
 }
 
 et_FSM_state FSM_init_state_handler(void)

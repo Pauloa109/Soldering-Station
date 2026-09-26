@@ -7,7 +7,7 @@
 /** * @date      25/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 #ifndef __DEBUG_H__
 #define __DEBUG_H__
@@ -32,16 +32,9 @@ extern "C" {
 /* * Public Defines                                                                   * */
 /* ************************************************************************************ */
 
-#define DEBUG_NAME_REGISTER(_name)                                                       \
-    *_DEBUG_NAME = #_name;
-
-#define DEBUG_LEVEL_REGISTER(_level)                                                     \
-    static const uint8_t _DEBUG_LEVEL = _level;                                          \
-    static const char *_DEBUG_NAME = NULL;
-
 #define MODULE_DEBUG_REGISTER(_level, _name)                                             \
-    DEBUG_LEVEL_REGISTER(_level);                                                        \
-    DEBUG_NAME_REGISTER(_name);  
+    static const uint8_t _DEBUG_LEVEL = _level;                                          \
+    static const char *_DEBUG_NAME = #_name;
 
 /* TODO: Add defines. */
 

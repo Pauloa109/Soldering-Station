@@ -7,7 +7,7 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
@@ -38,13 +38,26 @@
 /* ************************************************************************************ */
 /* * Debug                                                                            * */
 /* ************************************************************************************ */
+#if (PROJECT_ENABLE_LOGGER == ENABLED)
 
-#ifdef UI_DEBUG_LEVEL
-    #warning "No debug level defined\r\n".
-    DEBUG_LEVEL_REGISTER  (UI_DEBUG_LEVEL)
+    #if UI_DEBUG_LEVEL
+
+        DEBUG_LEVEL_REGISTER(UI_DEBUG_LEVEL)
+
+    #else 
+
+        #warning "No debug level ser for the UI module"
+
+        DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
+
+    #endif
+
 #else 
-    DEBUG_LEVEL_REGISTER  (DEBUG_LEVEL_D)
+
+    MODULE_DEBUG_REGISTER(DEBUG_LEVEL_N, UI_module)
+
 #endif
+
 
 /* TODO: Add debug configuration. */
 

@@ -7,7 +7,7 @@
 /** * @date      29/10/2025                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
@@ -35,6 +35,26 @@
 /* ************************************************************************************ */
 /* * Debug                                                                            * */
 /* ************************************************************************************ */
+
+#if (PROJECT_ENABLE_LOGGER == ENABLED)
+
+    #if ST7789_DEBUG_LEVEL
+
+        DEBUG_LEVEL_REGISTER(ST7789_DEBUG_LEVEL)
+
+    #else 
+
+        #warning "No debug level ser for the ST7789 API"
+
+        DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
+
+    #endif
+
+#else 
+
+    MODULE_DEBUG_REGISTER(DEBUG_LEVEL_N, ST7789_module)
+
+#endif
 
 /* TODO: Add debug configuration. */
 
@@ -185,8 +205,6 @@ static uint8_t disp_buf[ST7789_WIDTH * HOR_LEN * 2];
     #error "Directive to use DMA not recognized"
 
 #endif 
-
-#define ABS(x) ((x) > 0 ? (x) : -(x))
 
 /* TODO: Add macros. */
 

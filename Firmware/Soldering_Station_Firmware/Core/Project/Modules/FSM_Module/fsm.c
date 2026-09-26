@@ -7,7 +7,7 @@
 /** * @date      03/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
@@ -30,12 +30,25 @@
 /* ************************************************************************************ */
 /* * Debug                                                                            * */
 /* ************************************************************************************ */
+#if (PROJECT_ENABLE_LOGGER == ENABLED)
 
-#ifdef FSM_DEBUG_LEVEL
-    DEBUG_LEVEL_REGISTER(FSM_DEBUG_LEVEL)
+    #if FSM_DEBUG_LEVEL
+
+        DEBUG_LEVEL_REGISTER(FSM_DEBUG_LEVEL)
+
+    #else 
+
+        #warning "No debug level ser for the FSM module"
+
+        DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
+
+    #endif
+
 #else 
-    DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
-#endif 
+
+    MODULE_DEBUG_REGISTER(DEBUG_LEVEL_N, SD_module)
+
+#endif
 
 /* TODO: Add debug configuration. */
 

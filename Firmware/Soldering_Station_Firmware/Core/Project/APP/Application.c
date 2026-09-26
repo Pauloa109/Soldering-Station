@@ -7,7 +7,7 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V0.0.0                                                              * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
@@ -37,12 +37,25 @@
 /* ************************************************************************************ */
 /* * Debug                                                                            * */
 /* ************************************************************************************ */
+#if (PROJECT_ENABLE_LOGGER == ENABLED)
 
-#ifdef APP_DEBUG_LEVEL
-  DEBUG_LEVEL_REGISTER(APP_DEBUG_LEVEL)
+    #if APP_DEBUG_LEVEL
+
+        DEBUG_LEVEL_REGISTER(APP_DEBUG_LEVEL)
+
+    #else 
+
+        #warning "No debug level ser for the APP"
+
+        DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
+
+    #endif
+
 #else 
-  DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_I)
-#endif 
+
+    MODULE_DEBUG_REGISTER(DEBUG_LEVEL_N,APP_module)
+
+#endif
 
 /* TODO: Add debug configuration. */
 

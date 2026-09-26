@@ -30,13 +30,9 @@
 
 #include "Proj.h"
 
-#include "ili9341.h"
-
 #include "Core_Include.h"
 
 #include "Application.h"
-#include <string.h>
-
 
 /* USER CODE END Includes */
 
@@ -72,10 +68,24 @@ typedef enum
           in the project configuration file."
 #endif
 
-#ifdef MAIN_DEBUG_LEVEL
-  DEBUG_LEVEL_REGISTER(MAIN_DEBUG_LEVEL)
+#if (PROJECT_ENABLE_LOGGER == ENABLED)
+
+    #if MAIN_DEBUG_LEVEL
+
+        DEBUG_LEVEL_REGISTER(MAIN_DEBUG_LEVEL)
+
+    #else 
+
+        #warning "No debug level ser for the main"
+
+        DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
+
+    #endif
+
 #else 
-  DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
+
+    MODULE_DEBUG_REGISTER(DEBUG_LEVEL_N, MAIN)
+
 #endif
 
 /* USER CODE END PD */

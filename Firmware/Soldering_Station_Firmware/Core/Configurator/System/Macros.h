@@ -7,7 +7,7 @@
 /** * @date      03/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 #ifndef __MACROS_H__
 #define __MACROS_H__
@@ -38,24 +38,6 @@ extern "C" {
     (_ptr == NULL)                                                                     
  
 /* TODO: Add macros. */
-
-/* ************************************************************************************ */
-/* * Public Macro Functions                                                           * */
-/* ************************************************************************************ */
-
-/**
- * @brief Returns the offset required to center an object.
- *
- * @param _full_space      Total available space.
- * @param _occupied_space  Space occupied by the object.
- *
- * @return Offset from the beginning of the available space.
- */
-static inline uint16_t GET_MIDDLE_OFFSET(uint16_t _full_space,
-                           uint16_t _occupied_space)
-{
-    return (_full_space - _occupied_space) / 2U;
-}
 
 
 /* ************************************************************************************ */

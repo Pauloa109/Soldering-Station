@@ -1,25 +1,21 @@
 /** ********************************************************************************** **/
-/** * @file      sd_card.h                                                           * **/
+/** * @file      Helpers.h                                                           * **/
 /** * @brief     This file contains all the functions prototypes of                  * **/
-/** *            sd_card.h.                                                          * **/
+/** *            Helpers.h.                                                          * **/
 /** * @author    Paulo Peixoto                                                       * **/
 /** *                                                                                * **/
-/** * @date      19/09/2026                                                          * **/
+/** * @date      26/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
 /** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
-#ifndef __SD_CARD_H__
-#define __SD_CARD_H__
+#ifndef __HELPERS_H__
+#define __HELPERS_H__
 
 /* ************************************************************************************ */
 /* * Public Includes                                                                  * */
 /* ************************************************************************************ */
-
-/* Core Include. */
-#include "Core_Include.h"
-
 
 /* TODO: Add includes. */
 
@@ -32,34 +28,28 @@ extern "C" {
 #endif
 
 /* ************************************************************************************ */
-/* * Public Enumerations                                                              * */
+/* * Helper Macros                                                                    * */
 /* ************************************************************************************ */
 
-typedef enum
+#define ABS(x) ((x) > 0 ? (x) : -(x))
+
+/* ************************************************************************************ */
+/* * Helper Functions                                                                 * */
+/* ************************************************************************************ */
+
+/**
+ * @brief Returns the offset required to center an object.
+ *
+ * @param _full_space      Total available space.
+ * @param _occupied_space  Space occupied by the object.
+ *
+ * @return Offset from the beginning of the available space.
+ */
+static inline uint16_t GET_MIDDLE_OFFSET(uint16_t _full_space,
+                           uint16_t _occupied_space)
 {
-    FILE_READ		    = 0x01,
-	FILE_OPEN_EXISTING	= 0x00,
-	FILE_WRITE			= 0x02,
-	FILE_CREATE_NEW		= 0x04,
-	FILE_CREATE_ALWAYS	= 0x08,
-	FILE_OPEN_ALWAYS    = 0x10
-} et_FILLE_ACCESS_CONTROL;
-
-/* TODO: Add enumerations. */
-
-/* ************************************************************************************ */
-/* * Public Functions Prototypes                                                      * */
-/* ************************************************************************************ */
-
-et_RET SD_WriteFille(const char *path, const char *buf, uint16_t buf_size);
-
-et_RET SD_ReadFille(const char *path, char *buf, uint16_t buf_size);
-
-et_RET SD_ReadFille_WithJump(const char *path, char *buf, uint16_t buf_size, unsigned long ofset);
-
-et_RET SD_CreadeDir(const char *path);
-
-/* TODO: Add public function prototypes. */
+    return (_full_space - _occupied_space) / 2U;
+}
 
 /* ************************************************************************************ */
 /* * C++ Support                                                                      * */
@@ -69,6 +59,6 @@ et_RET SD_CreadeDir(const char *path);
 }
 #endif
 
-#endif /* __SD_CARD_H__ */
+#endif /* __HELPERS_H__ */
 
 /* -- End of file -- */

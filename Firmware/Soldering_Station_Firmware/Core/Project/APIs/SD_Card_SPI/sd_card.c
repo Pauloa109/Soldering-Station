@@ -7,38 +7,48 @@
 /** * @date      19/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 23/09/2026                                                    * **/
+/** * Last modified on 26/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
 /* * Private Includes                                                                 * */
 /* ************************************************************************************ */
 
+/* Core Include. */
+#include "Core_Include.h"
+
 /* Include Header File. */
 #include "sd_card.h"
 
 /* Include Middle Ware. */
-#include "Debug.h"
-#include "Macros.h"
-#include "Returns.h"
 #include "ff.h"
 #include "integer.h"
-#include <stdint.h>
+
+/* Inclued Project Level Configurator. */
+#include "Proj.h"
 
 /* TODO: Add includes. */
 
 /* ************************************************************************************ */
 /* * Debug                                                                            * */
 /* ************************************************************************************ */
+#if (PROJECT_ENABLE_LOGGER == ENABLED)
 
-#ifdef SD_DEBUG_LEVEL
+    #if SD_DEBUG_LEVEL
 
-    DEBUG_LEVEL_REGISTER(SD_DEBUG_LEVEL)
+        DEBUG_LEVEL_REGISTER(SD_DEBUG_LEVEL)
+
+    #else 
+
+        #warning "No debug level ser for the SD_Card API"
+
+        DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
+
+    #endif
 
 #else 
 
-    #warning "No debug level ser for the SD_Card API"
-    DEBUG_LEVEL_REGISTER(DEBUG_LEVEL_D)
+    MODULE_DEBUG_REGISTER(DEBUG_LEVEL_N,SD_module)
 
 #endif
 
