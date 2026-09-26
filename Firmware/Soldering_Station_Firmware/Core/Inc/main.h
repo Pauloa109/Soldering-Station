@@ -57,9 +57,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LCD_IQR_Pin GPIO_PIN_13
-#define LCD_IQR_GPIO_Port GPIOC
-#define LCD_IQR_EXTI_IRQn EXTI15_10_IRQn
 #define Button_3_Pin GPIO_PIN_15
 #define Button_3_GPIO_Port GPIOC
 #define Button_3_EXTI_IRQn EXTI15_10_IRQn
@@ -106,7 +103,6 @@ void Error_Handler(void);
 #define Button_4_EXTI_IRQn EXTI9_5_IRQn
 #define Channel_B_Pin GPIO_PIN_7
 #define Channel_B_GPIO_Port GPIOB
-#define Channel_B_EXTI_IRQn EXTI9_5_IRQn
 #define Channel_A_Pin GPIO_PIN_8
 #define Channel_A_GPIO_Port GPIOB
 #define Channel_A_EXTI_IRQn EXTI9_5_IRQn

@@ -7,7 +7,7 @@
 /** * @date      03/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 09/09/2026                                                    * **/
+/** * Last modified on 25/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
@@ -21,6 +21,7 @@
 #include "fsm.h"
 
 /* Include UI module. */
+#include "Returns.h"
 #include "Ui.h"
 
 /* TODO: Add includes. */
@@ -88,7 +89,7 @@ static bool g_initialized = false;
 /* FSM struct. */
 static st_fsm fsm =
 {
-    .current_state  =  init_state,
+    .current_state  =  idle_state,
     .stateHandler   =  state_array,
     .errorHandler   =  FSM_error_state_handler
 };
@@ -112,6 +113,8 @@ static st_fsm fsm =
 
 et_RET FSM_Initialize(void)
 {
+    RET_REGISTER(ret);
+
     if (CHECK_PTR(fsm.stateHandler))
     {
         PRINT_E("[FSM] no state handler defined.");
@@ -125,6 +128,14 @@ et_RET FSM_Initialize(void)
     }
 
     g_initialized = true;
+
+    ret = UI_Initialize();
+
+    if(CHECK_RET_ERROR(ret))
+    {
+        PRINT_E("[APP] error initializing Ui module. ")
+        return -RET_NOT_OK;
+    }
 
     return RET_INITIALIZED;
 }

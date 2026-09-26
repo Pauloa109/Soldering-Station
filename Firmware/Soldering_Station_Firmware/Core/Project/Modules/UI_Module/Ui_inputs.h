@@ -7,7 +7,7 @@
 /** * @date      09/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 23/09/2026                                                    * **/
+/** * Last modified on 25/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __UI_INPUTS_H__
@@ -45,11 +45,12 @@ extern "C" {
     BUTTON(b1_but           ,   MACRO_B1_PIN              ,   MACRO_B1_PORT)             \
     BUTTON(b2_but           ,   MACRO_B2_PIN              ,   MACRO_B2_PORT)             \
     BUTTON(b3_but           ,   MACRO_B3_PIN              ,   MACRO_B3_PORT)             \
-    BUTTON(encoder_a_but    ,   ENCODER_A_PIN             ,   ENCODER_A_PORT)            \
-    BUTTON(encoder_b_but    ,   ENCODER_B_PIN             ,   ENCODER_B_PORT)            \
     BUTTON(encoder_c_but    ,   ENCODER_C_PIN             ,   ENCODER_C_PORT)    
 
-/* TODO: Add defines. */
+//    BUTTON(encoder_b_but    ,   ENCODER_B_PIN             ,   ENCODER_B_PORT)          \
+//    BUTTON(encoder_a_but    ,   ENCODER_A_PIN             ,   ENCODER_A_PORT)          \
+
+    /* TODO: Add defines. */
 
 #ifdef __cplusplus
 }

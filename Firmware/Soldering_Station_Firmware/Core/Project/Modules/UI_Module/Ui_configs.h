@@ -7,7 +7,7 @@
 /** * @date      09/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 23/09/2026                                                    * **/
+/** * Last modified on 25/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __UI_CONFIGS_H__
@@ -80,7 +80,8 @@ uint8_t UI_GPIOPin_Read_encapsulated(uint16_t pin, uint32_t port);
         .Display_Draw_Vertical_Line     =  ILI9341_DrawVLine                    ,
         .Display_Draw_Rectangle         =  ILI9341_DrawRectangle                ,
         .Display_DrawText               =  NULL                                 ,
-        .Display_FillColour             =  ILI9341_Fill
+        .Display_FillColour             =  ILI9341_Fill                         ,
+        .Display_Draw_RoundedRectangular = ST7789_DrawRoundRect
     };
 
 #elif (UI_LCD_DRIVER == UI_LCD_DRIVER_ST7789)

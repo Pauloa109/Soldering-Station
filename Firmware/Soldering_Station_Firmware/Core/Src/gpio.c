@@ -56,11 +56,11 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LCD_DC_Pin|LDC_RST_Pin|LCD_CS_Pin|SD_CS_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LCD_IQR_Pin Button_3_Pin */
-  GPIO_InitStruct.Pin = LCD_IQR_Pin|Button_3_Pin;
+  /*Configure GPIO pin : Button_3_Pin */
+  GPIO_InitStruct.Pin = Button_3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(Button_3_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Buzzer_Pin LCD_Back_Light_Pin */
   GPIO_InitStruct.Pin = Buzzer_Pin|LCD_Back_Light_Pin;
@@ -77,9 +77,9 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Button_2_Pin Tilt_Sensor_Pin Reed_Switch_Pin Vaccum_On_Pin
-                           Button_4_Pin Channel_B_Pin Channel_A_Pin */
+                           Button_4_Pin Channel_A_Pin */
   GPIO_InitStruct.Pin = Button_2_Pin|Tilt_Sensor_Pin|Reed_Switch_Pin|Vaccum_On_Pin
-                          |Button_4_Pin|Channel_B_Pin|Channel_A_Pin;
+                          |Button_4_Pin|Channel_A_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -89,6 +89,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Zero_Cross_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Channel_B_Pin */
+  GPIO_InitStruct.Pin = Channel_B_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Channel_B_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : Button_2B9_Pin */
   GPIO_InitStruct.Pin = Button_2B9_Pin;

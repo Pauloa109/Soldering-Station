@@ -7,7 +7,7 @@
 /** * @date      17/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 23/09/2026                                                    * **/
+/** * Last modified on 25/09/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __ST7789_DEFINES_H__
@@ -39,7 +39,7 @@ extern "C" {
 #define ST7789_SPI_PORT hspi1
 
 /* choose whether use DMA or not */
-#define ST7789_USE_DMA                  ( DISABLED )
+#define ST7789_USE_DMA                  ( ENABLED )
 
 #define ST7789_USING_240X320
 
