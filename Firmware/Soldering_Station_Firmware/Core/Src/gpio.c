@@ -51,16 +51,20 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_14, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, Buzzer_Pin|LCD_Back_Light_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LCD_DC_Pin|LDC_RST_Pin|LCD_CS_Pin|SD_CS_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : Button_3_Pin */
-  GPIO_InitStruct.Pin = Button_3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  /*Configure GPIO pin : PC14 */
+  GPIO_InitStruct.Pin = GPIO_PIN_14;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(Button_3_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Buzzer_Pin LCD_Back_Light_Pin */
   GPIO_InitStruct.Pin = Buzzer_Pin|LCD_Back_Light_Pin;
@@ -77,24 +81,12 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Button_2_Pin Tilt_Sensor_Pin Reed_Switch_Pin Vaccum_On_Pin
-                           Button_4_Pin Channel_A_Pin */
+                           Button_4_Pin Channel_B_Pin Channel_A_Pin */
   GPIO_InitStruct.Pin = Button_2_Pin|Tilt_Sensor_Pin|Reed_Switch_Pin|Vaccum_On_Pin
-                          |Button_4_Pin|Channel_A_Pin;
+                          |Button_4_Pin|Channel_B_Pin|Channel_A_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : Zero_Cross_Pin */
-  GPIO_InitStruct.Pin = Zero_Cross_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(Zero_Cross_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : Channel_B_Pin */
-  GPIO_InitStruct.Pin = Channel_B_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(Channel_B_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : Button_2B9_Pin */
   GPIO_InitStruct.Pin = Button_2B9_Pin;
@@ -106,17 +98,11 @@ void MX_GPIO_Init(void)
   HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-
   HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
 

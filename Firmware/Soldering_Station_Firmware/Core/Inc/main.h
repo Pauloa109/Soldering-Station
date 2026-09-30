@@ -57,9 +57,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Button_3_Pin GPIO_PIN_15
-#define Button_3_GPIO_Port GPIOC
-#define Button_3_EXTI_IRQn EXTI15_10_IRQn
 #define Buzzer_Pin GPIO_PIN_1
 #define Buzzer_GPIO_Port GPIOA
 #define LCD_Back_Light_Pin GPIO_PIN_2
@@ -87,11 +84,8 @@ void Error_Handler(void);
 #define Blower_PWM_GPIO_Port GPIOA
 #define Vaccum_PWM_Pin GPIO_PIN_10
 #define Vaccum_PWM_GPIO_Port GPIOA
-#define Zero_Cross_Pin GPIO_PIN_15
-#define Zero_Cross_GPIO_Port GPIOA
 #define Tilt_Sensor_Pin GPIO_PIN_3
 #define Tilt_Sensor_GPIO_Port GPIOB
-#define Tilt_Sensor_EXTI_IRQn EXTI3_IRQn
 #define Reed_Switch_Pin GPIO_PIN_4
 #define Reed_Switch_GPIO_Port GPIOB
 #define Reed_Switch_EXTI_IRQn EXTI4_IRQn
@@ -103,6 +97,7 @@ void Error_Handler(void);
 #define Button_4_EXTI_IRQn EXTI9_5_IRQn
 #define Channel_B_Pin GPIO_PIN_7
 #define Channel_B_GPIO_Port GPIOB
+#define Channel_B_EXTI_IRQn EXTI9_5_IRQn
 #define Channel_A_Pin GPIO_PIN_8
 #define Channel_A_GPIO_Port GPIOB
 #define Channel_A_EXTI_IRQn EXTI9_5_IRQn

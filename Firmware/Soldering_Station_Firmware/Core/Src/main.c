@@ -174,8 +174,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  RET_REGISTER(ret);
-  /* USER CODE END 1 */
+  RET_REGISTER(ret);  /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 

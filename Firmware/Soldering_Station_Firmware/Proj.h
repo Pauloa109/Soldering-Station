@@ -7,7 +7,7 @@
 /** * @date      28/08/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 26/09/2026                                                    * **/
+/** * Last modified on 30/09/2026                                                    * **/
 /** ********************************************************************************** **/
 #ifndef __PROJ_H__
 #define __PROJ_H__
@@ -24,6 +24,8 @@ extern "C" {
 #include "Debug.h"
 
 #include "Internal_defines.h"
+
+#include "General_defines.h"
 
 /* TODO: Add includes. */
 
@@ -53,7 +55,7 @@ extern "C" {
 /* ************************************************************************************ */
 
 /* Enable logger function. */
-#define PROJECT_ENABLE_LOGGER                   ( DISABLED )
+#define ENABLE_PROJECT_LOGGER                   ( DISABLED )
 
 /* Enable printf redirect. */
 #define PROJECT_REDIRECT_PRINTF_ENABLE          ( 0 )
