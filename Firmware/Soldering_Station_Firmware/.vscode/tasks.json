@@ -1,0 +1,35 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Configure Firmware Release",
+            "type": "process",
+            "command": "cube-cmake",
+            "args": [
+                "--preset",
+                "Release"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Firmware Release",
+            "type": "process",
+            "command": "cube-cmake",
+            "args": [
+                "--build",
+                "--preset",
+                "Release"
+            ],
+            "dependsOn": "Configure Firmware Release",
+            "dependsOrder": "sequence",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}

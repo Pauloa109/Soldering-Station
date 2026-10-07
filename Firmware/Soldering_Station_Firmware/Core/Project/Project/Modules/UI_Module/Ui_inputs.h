@@ -7,7 +7,7 @@
 /** * @date      09/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 07/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __UI_INPUTS_H__
@@ -42,13 +42,13 @@ extern "C" {
     BUTTON(heat_gun_sen     ,   HEAT_GUN_MAG_SENSOR_PIN   ,   HEAT_GUN_MAG_SENSOR_PORT)  \
     BUTTON(vaccum_pump_trg  ,   VACCUM_PUMP_TRIGGER_PIN   ,   VACCUM_PUMP_TRIGGER_PORT)  \
     BUTTON(zero_croos_sen   ,   ZERO_CROSS_PIN            ,   ZERO_CROSS_PORT)           \
-    BUTTON(b1_but           ,   MACRO_B1_PIN              ,   MACRO_B1_PORT)             \
-    BUTTON(b2_but           ,   MACRO_B2_PIN              ,   MACRO_B2_PORT)             \
-    BUTTON(b3_but           ,   MACRO_B3_PIN              ,   MACRO_B3_PORT)             \
     BUTTON(encoder_c_but    ,   ENCODER_C_PIN             ,   ENCODER_C_PORT)    
 
-//    BUTTON(encoder_b_but    ,   ENCODER_B_PIN             ,   ENCODER_B_PORT)          \
-//    BUTTON(encoder_a_but    ,   ENCODER_A_PIN             ,   ENCODER_A_PORT)          \
+/*  BUTTON(encoder_b_but    ,   ENCODER_B_PIN             ,   ENCODER_B_PORT)          
+    BUTTON(encoder_a_but    ,   ENCODER_A_PIN             ,   ENCODER_A_PORT)          
+    BUTTON(b1_but           ,   MACRO_B1_PIN              ,   MACRO_B1_PORT)             
+    BUTTON(b2_but           ,   MACRO_B2_PIN              ,   MACRO_B2_PORT)             
+    BUTTON(b3_but           ,   MACRO_B3_PIN              ,   MACRO_B3_PORT)            */          
 
     /* TODO: Add defines. */
 

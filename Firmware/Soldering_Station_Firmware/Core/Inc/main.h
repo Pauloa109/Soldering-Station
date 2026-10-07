@@ -78,14 +78,6 @@ void Error_Handler(void);
 #define Heat_Gun_PWM_GPIO_Port GPIOB
 #define SD_CS_Pin GPIO_PIN_12
 #define SD_CS_GPIO_Port GPIOB
-#define Iron_PWM_Pin GPIO_PIN_8
-#define Iron_PWM_GPIO_Port GPIOA
-#define Blower_PWM_Pin GPIO_PIN_9
-#define Blower_PWM_GPIO_Port GPIOA
-#define Vaccum_PWM_Pin GPIO_PIN_10
-#define Vaccum_PWM_GPIO_Port GPIOA
-#define Tilt_Sensor_Pin GPIO_PIN_3
-#define Tilt_Sensor_GPIO_Port GPIOB
 #define Reed_Switch_Pin GPIO_PIN_4
 #define Reed_Switch_GPIO_Port GPIOB
 #define Reed_Switch_EXTI_IRQn EXTI4_IRQn

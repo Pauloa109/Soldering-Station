@@ -7,7 +7,7 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 28/09/2026                                                    * **/
+/** * Last modified on 07/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __UI_H__
@@ -29,11 +29,16 @@ extern "C" {
 /* Include UI module inputs. */
 #include "Ui_inputs.h"
 
+
+#include "Ui_types.h"
+
 /* TODO: Add includes. */
 
 /* ************************************************************************************ */
 /* * Public Defines                                                                   * */
 /* ************************************************************************************ */
+
+#define EDGE                (   5   )
 
 /* TODO: Add defines. */
 
@@ -110,7 +115,9 @@ et_RET UI_Draw_IntroScreen(void);
 
 et_RET UI_Refresh_SelectedChannel();
 
-et_RET UI_Draw_IronScreen(void);
+void UI_DrawMacroValue(uint16_t x, uint16_t y, uint16_t value);
+
+et_RET UI_Draw_IronScreen(uint16_t macro_m1, uint16_t macro_m2);
 
 /**
  * @brief   Encoder Pin A ISR function.
@@ -142,6 +149,13 @@ uint8_t UI_encoder_but_get_logged_state(void);
  */   
 void UI_encoder_but_clear_logged_state(void);
 
+uint8_t UI_b1_but_get_logged_state(void);
+
+void UI_b1_but_clear_logged_state(void);
+
+uint8_t UI_b2_but_get_logged_state(void);
+
+void UI_b2_but_clear_logged_state(void);
 
 uint8_t UI_Get_SelectedChannel();
 

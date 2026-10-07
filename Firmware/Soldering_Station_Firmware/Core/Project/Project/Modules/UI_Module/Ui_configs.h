@@ -7,7 +7,7 @@
 /** * @date      09/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 25/09/2026                                                    * **/
+/** * Last modified on 02/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __UI_CONFIGS_H__
@@ -20,13 +20,10 @@
 /* Include UI module typpes. */
 #include "Ui_types.h"
 
-/* Include the Display Driver API. */
-#include "ili9341.h"
+#include "Proj.h"
 
 /* Include the Display Driver API. */
 #include "st7789.h"
-#include <string.h>
-
 
 /* TODO: Add includes. */
 

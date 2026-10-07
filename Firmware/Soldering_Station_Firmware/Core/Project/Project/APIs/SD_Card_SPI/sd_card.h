@@ -7,7 +7,7 @@
 /** * @date      19/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 26/09/2026                                                    * **/
+/** * Last modified on 02/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __SD_CARD_H__
@@ -20,6 +20,9 @@
 /* Core Include. */
 #include "Core_Include.h"
 
+/* Include Middle Ware. */
+#include "ff.h"
+#include "integer.h"
 
 /* TODO: Add includes. */
 
@@ -51,13 +54,22 @@ typedef enum
 /* * Public Functions Prototypes                                                      * */
 /* ************************************************************************************ */
 
-et_RET SD_WriteFille(const char *path, const char *buf, uint16_t buf_size);
+et_RET SD_Mount(FATFS *ffs);
 
-et_RET SD_ReadFille(const char *path, char *buf, uint16_t buf_size);
+et_RET SD_UnMount(void);
 
-et_RET SD_ReadFille_WithJump(const char *path, char *buf, uint16_t buf_size, unsigned long ofset);
+et_RET SD_OpenFille(FIL *file, const char *path, et_FILLE_ACCESS_CONTROL open_mode);
+
+et_RET SD_CloseFille(FIL *file);
+
+et_RET SD_WriteFille(FIL *file, const char *buf, uint16_t buf_size);
+
+et_RET SD_ReadFille(FIL *file, char *buf, uint16_t buf_size);
+
+et_RET SD_ReadFille_WithJump(FIL *file, char *buf, uint16_t buf_size, DWORD offset);
 
 et_RET SD_CreadeDir(const char *path);
+
 
 /* TODO: Add public function prototypes. */
 

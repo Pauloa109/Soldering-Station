@@ -7,7 +7,7 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V0.0.0                                                              * **/
 /** *                                                                                * **/
-/** * Last modified on 09/09/2026                                                    * **/
+/** * Last modified on 07/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __FSM_STATES_H__
@@ -107,8 +107,45 @@ typedef enum
 
 FOREACH_STATE(GENERATE_STATE_HANDLER)
 
-/* TODO: Add public function prototypes. */
+/**
+ * @brief Draw a three-digit seven-segment temperature value.
+ * @param temperature Value to display; values above 999 are clamped to 999.
+ * @param x,y Top-left position of the first digit.
+ * @param digit_width,digit_height Size of each digit in pixels.
+ * @param segment_thickness Thickness of each segment in pixels.
+ * @param digit_spacing Horizontal spacing between digits in pixels.
+ * @param foreground_color Color used by lit segments.
+ * @param background_color Color used by unlit segments.
+ * @return true if the geometry fits the display and was drawn, otherwise false.
+ */
+bool Display_Temperature(uint16_t temperature,
+                         uint16_t x,
+                         uint16_t y,
+                         uint16_t digit_width,
+                         uint16_t digit_height,
+                         uint16_t segment_thickness,
+                         uint16_t digit_spacing,
+                         uint16_t foreground_color,
+                         uint16_t background_color);
 
+/**
+ * @brief Draw a degree-Celsius icon using caller-supplied geometry.
+ * @param x,y Top-left position of the icon.
+ * @param width,height Overall icon dimensions in pixels.
+ * @param thickness Segment and degree-ring thickness in pixels.
+ * @param spacing Gap between the degree ring and the C.
+ * @param foreground_color Color used by the icon.
+ * @param background_color Color used to clear its area.
+ * @return true if the geometry fits the display and was drawn, otherwise false.
+ */
+bool Display_TemperatureUnit(uint16_t x,
+                             uint16_t y,
+                             uint16_t width,
+                             uint16_t height,
+                             uint16_t thickness,
+                             uint16_t spacing,
+                             uint16_t foreground_color,
+                             uint16_t background_color);
 
 #ifdef __cplusplus
 }

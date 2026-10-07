@@ -18,6 +18,48 @@
                     "imageFileName": "${command:st-stm32-ide-debug-launch.get-projects-binary-from-context1}"
                 }
             ]
+        },
+        {
+            "type": "stlinkgdbtarget",
+            "request": "launch",
+            "name": "STM32Cube: Launch ST-Link GDB Server (Release)",
+            "origin": "snippet",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build Firmware Release",
+            "runEntry": "main",
+            "imagesAndSymbols": [
+                {
+                    "imageFileName": "${workspaceFolder}/build/Release/Soldering_Station_V2.elf"
+                }
+            ]
+        },
+        {
+            "name": "STM32F103 - Pico Probe",
+            "type": "cortex-debug",
+            "request": "launch",
+
+            "cwd": "${workspaceFolder}",
+
+            "executable": "${workspaceFolder}/build/Debug/Soldering_Station_V2.elf",
+
+            "servertype": "openocd",
+
+            "gdbPath": "arm-none-eabi-gdb",
+
+            "serverpath": "C:/OpenOCD/bin/openocd.exe",
+
+            "configFiles": [
+                "interface/cmsis-dap.cfg",
+                "target/stm32f1x.cfg"
+            ],
+
+            "device": "STM32F103C8T6",
+
+            "interface": "swd",
+
+            "runToEntryPoint": "main",
+
+            "showDevDebugOutput": "raw"
         }
     ]
 }

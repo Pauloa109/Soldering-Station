@@ -92,4 +92,3 @@ void ST7789_GPIOPin_Set_encapsulated(uint16_t pin, uint32_t port, uint8_t state)
 #endif /* __ST7789_CONFIG_H__ */
 
 /* -- End of file -- */
-

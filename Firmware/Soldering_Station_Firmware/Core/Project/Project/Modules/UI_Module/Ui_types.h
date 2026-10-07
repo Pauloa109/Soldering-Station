@@ -7,13 +7,14 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V0.0.0                                                              * **/
 /** *                                                                                * **/
-/** * Last modified on 23/09/2026                                                    * **/
+/** * Last modified on 02/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __UI_TYPES_H__
 #define __UI_TYPES_H__
 
-#include "st7789.h"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,8 +26,13 @@ extern "C" {
 /* Core Include. */
 #include "Core_Include.h"
 
-/* TODO: Add includes. */
+#include "Proj.h"
 
+#include "st7789.h"
+
+#include "ff.h"
+
+/* TODO: Add includes. */
 
 /* ************************************************************************************ */
 /* * Public Typedefs                                                                  * */
@@ -64,14 +70,13 @@ typedef void    (*t_Display_Draw_Rectangle)         (uint16_t x,
                                                      uint16_t color);
 
 //Type for a function that draws text
-typedef void    (*t_Display_Draw_Text)              (uint16_t x, 
-                                                     uint16_t y, 
-                                                     char ch, 
-                                                     FontDef font, 
-                                                     uint16_t color, 
-                                                     uint16_t bgcolor);
-
-
+typedef void    (*t_Display_Draw_Char)              (uint16_t x, 
+                                                    uint16_t y, 
+                                                    char ch, 
+                                                    FontDef font, 
+                                                    uint16_t color, 
+                                                    uint16_t bgcolor);
+                    
 //Type for a function that fills the screen with a colour
 typedef void    (*t_Display_Fill_Colour)            (uint16_t xSta, 
                                                      uint16_t ySta, 
@@ -103,7 +108,7 @@ typedef struct{
     t_Display_Draw_Horizontal_Line      Display_Draw_Horizontal_Line;
     t_Display_Draw_Vertical_Line        Display_Draw_Vertical_Line;
     t_Display_Draw_Rectangle            Display_Draw_Rectangle;
-    t_Display_Draw_Text                 Display_DrawChar;
+    t_Display_Draw_Char                 Display_DrawChar;
 
     t_Display_Fill_Colour               Display_FillColour;
 

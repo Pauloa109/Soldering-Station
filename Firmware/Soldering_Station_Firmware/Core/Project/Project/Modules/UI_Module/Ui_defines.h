@@ -6,7 +6,7 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V0.0.0                                                              * **/
 /** *                                                                                * **/
-/** * Last modified on 30/09/2026                                                    * **/
+/** * Last modified on 07/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __UI_DEFINES_H__
@@ -65,6 +65,8 @@ extern "C" {
 
 #define BUTTON_PRESSED                  (   GPIO_LOW   )
 #define BUTTON_UNPRESSED                (   GPIO_HIGH  )
+#define BUTTON_LONG_PRESSED             (       2      )
+
 
 #define ENCODER_NOT_ROTATED             (   0   )
 #define ENCODER_ROTATED_LEFT            (   1   )

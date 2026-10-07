@@ -7,7 +7,7 @@
 /** * @date      29/10/2025                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 23/09/2026                                                    * **/
+/** * Last modified on 02/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __ST7789_H__
@@ -22,6 +22,9 @@
 #include "st7789_types.h"
 
 #include "fonts.h"
+
+#include "sd_card.h"
+
 /* TODO: Add includes. */
 
 /* ************************************************************************************ */
@@ -138,20 +141,16 @@ void ST7789_InvertColors(uint8_t invert);
  */
 void ST7789_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint16_t color, uint16_t bgcolor);
 
-#if (ST7789_USE_INTERNAL_STORAGE == ENABLED)
-
-        /** 
-        * @brief Write a string 
-        * @param  x&y -> cursor of the start point.
-        * @param str -> string to write
-        * @param font -> fontstyle of the string
-        * @param color -> color of the string
-        * @param bgcolor -> background color of the string
-        * @return  none
-        */
-        void ST7789_WriteString(uint16_t x, uint16_t y, const char *str, FontDef font, uint16_t color, uint16_t bgcolor);
-    
-#endif
+/** 
+* @brief Write a string 
+* @param  x&y -> cursor of the start point.
+* @param str -> string to write
+* @param font -> fontstyle of the string
+* @param color -> color of the string
+* @param bgcolor -> background color of the string
+* @return  none
+*/
+void ST7789_WriteString(uint16_t x, uint16_t y, const char *str, FontDef font, uint16_t color, uint16_t bgcolor);
 
 /** 
  * @brief Draw a filled Rectangle with single color

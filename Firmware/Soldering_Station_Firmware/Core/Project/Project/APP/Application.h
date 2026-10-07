@@ -7,7 +7,7 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V0.0.0                                                              * **/
 /** *                                                                                * **/
-/** * Last modified on 30/09/2026                                                    * **/
+/** * Last modified on 02/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 #ifndef __APPLICATION_H__
@@ -21,12 +21,8 @@ extern "C" {
 /* * Public Includes                                                                  * */
 /* ************************************************************************************ */
 
-/* */
-#include "stdint.h"
-
+/* Core Include. */
 #include "Core_Include.h"
-
-#include "xpt2046.h"
 
 /* TODO: Add includes. */
 

@@ -7,7 +7,7 @@
 /** * @date      19/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 30/09/2026                                                    * **/
+/** * Last modified on 02/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
@@ -20,12 +20,9 @@
 /* Include Header File. */
 #include "sd_card.h"
 
-/* Include Middle Ware. */
-#include "ff.h"
-#include "integer.h"
-
 /* Inclued Project Level Configurator. */
 #include "Proj.h"
+#include "Returns.h"
 
 /* TODO: Add includes. */
 
@@ -106,300 +103,14 @@
 /* * Private Functions Prototypes                                                     * */
 /* ************************************************************************************ */
 
-static et_RET SD_Mount(FATFS *ffs);
-
-static et_RET SD_UnMount(void);
-
-static et_RET SD_OpenFille(FIL *file, 
-                           const char *path, 
-                           et_FILLE_ACCESS_CONTROL open_mode);
-
-static et_RET SD_CloseFille(FIL *file);
-
 /* TODO: Add private function prototypes. */
 
 /* ************************************************************************************ */
 /* * Public Functions                                                                 * */
 /* ************************************************************************************ */
-
-et_RET SD_WriteFille(const char *path, const char *buf, uint16_t buf_size)
-{
-    RET_REGISTER(ret);
-
-    FRESULT result;
-    FATFS   ffs;
-    FIL     file;
-    UINT    bytes_written;
-
-    PRINT_D("[SD] Writing file");
-
-    ret = SD_Mount(&ffs);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Not mounted");
-        ret = SD_CloseFille(&file);
-        ret = SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Mounted");
-
-    ret = SD_OpenFille(&file, path, FILE_WRITE | FILE_OPEN_ALWAYS);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Fille not opened");
-        ret = SD_CloseFille(&file);
-        ret = SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Fille opened");
-
-    result = f_write(&file, buf, buf_size, &bytes_written);   
-
-    if (result != FR_OK)
-    {
-        PRINT_E("[SD] Unable to write to the file");
-        ret = SD_CloseFille(&file);
-        ret = SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    ret = SD_CloseFille(&file);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Fille not closed");
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Fille opened");
-    
-    ret = SD_UnMount();
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Not unmounted");
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Unmounted");
-    return RET_OK;
-}
-
-et_RET SD_ReadFille(const char *path, char *buf, uint16_t buf_size)
-{
-    RET_REGISTER(ret);
-
-    FRESULT result;
-    FATFS   ffs;
-    FIL     file;
-    UINT    bytes_read = 0;
-
-    PRINT_D("[SD] Reading file");
-
-    ret = SD_Mount(&ffs);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Not mounted");
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Mounted");
-
-    ret = SD_OpenFille(&file, path, FILE_READ);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] File not opened with reason %d", result);
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] File opened");
-
-    result = f_read(&file, buf, buf_size, &bytes_read);
-
-    if (result != FR_OK)
-    {
-        PRINT_E("[SD] Unable to read file");
-        SD_CloseFille(&file);
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    if (bytes_read != buf_size)
-    {
-        PRINT_E("[SD] Unable to read all bytes");
-        SD_CloseFille(&file);
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    ret = SD_CloseFille(&file);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] File not closed");
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] File closed");
-
-    ret = SD_UnMount();
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Not unmounted");
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Unmounted");
-
-    return RET_OK;
-}
-
-et_RET SD_ReadFille_WithJump(const char *path, char *buf, uint16_t buf_size, unsigned long ofset)
-{
-    RET_REGISTER(ret);
-
-    FRESULT result;
-    FATFS   ffs;
-    FIL     file;
-    UINT    bytes_read = 0;
-
-    PRINT_D("[SD] Reading file");
-
-    ret = SD_Mount(&ffs);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Not mounted");
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Mounted");
-
-    ret = SD_OpenFille(&file, path, FILE_READ);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] File not opened with reason %d", result);
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] File opened");
-
-    result = f_lseek( &file, (DWORD) ofset);
-
-    if (result != FR_OK)
-    {
-        PRINT_E("[SD] Unable to ofset file");
-        SD_CloseFille(&file);
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    result = f_read(&file, buf, buf_size, &bytes_read);
-
-    if (result != FR_OK)
-    {
-        PRINT_E("[SD] Unable to read file");
-        SD_CloseFille(&file);
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    if (bytes_read != buf_size)
-    {
-        PRINT_E("[SD] Unable to read all bytes");
-        SD_CloseFille(&file);
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    ret = SD_CloseFille(&file);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] File not closed");
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] File closed");
-
-    ret = SD_UnMount();
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Not unmounted");
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Unmounted");
-
-    return RET_OK;
-}
-
-et_RET SD_CreadeDir(const char *path)
-{
-    
-    RET_REGISTER(ret);
-
-    FRESULT result;
-    FATFS   ffs;
-
-    PRINT_D("[SD] Reading file");
-
-    ret = SD_Mount(&ffs);
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Not mounted");
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Mounted");
-
-    result = f_mkdir((const TCHAR *)path);
-
-    if (result != FR_OK)
-    {
-        PRINT_E("[SD] Unable to creade fir");;
-        SD_UnMount();
-        return -RET_NOT_OK;
-    }
-
-    ret = SD_UnMount();
-
-    if (CHECK_RET_ERROR(ret))
-    {
-        PRINT_E("[SD] Not unmounted");
-        return -RET_NOT_OK;
-    }
-
-    PRINT_I("[SD] Unmounted");
-
-    return RET_OK;
-}
-
-/* TODO: Add public functions. */
-
-/* ************************************************************************************ */
-/* * Private Functions                                                                * */
-/* ************************************************************************************ */
-
-static et_RET SD_Mount(FATFS *ffs)
+et_RET SD_Mount(FATFS *ffs)
 {
     FRESULT result;
-    DWORD   fre_clust;
-    FATFS   *space;
 
     PRINT_D("[SD] Mounting the SD_Card");
 
@@ -419,12 +130,10 @@ static et_RET SD_Mount(FATFS *ffs)
 
     PRINT_D("[SD] SD_Card Mounted");
 
-    result = f_getfree("", &fre_clust, &space);
-
     return RET_OK;
 }
 
-static et_RET SD_UnMount(void)
+et_RET SD_UnMount(void)
 {
     FRESULT result;
     PRINT_D("[SD] Unmounting the SD_Card");
@@ -442,7 +151,7 @@ static et_RET SD_UnMount(void)
     return RET_OK;
 } 
 
-static et_RET SD_OpenFille(FIL *file, const char *path, et_FILLE_ACCESS_CONTROL open_mode)
+et_RET SD_OpenFille(FIL *file, const char *path, et_FILLE_ACCESS_CONTROL open_mode)
 {
     FRESULT result;
     PRINT_D("[SD] Opening file %s", path);
@@ -472,7 +181,7 @@ static et_RET SD_OpenFille(FIL *file, const char *path, et_FILLE_ACCESS_CONTROL 
     return RET_OK;
 }
 
-static et_RET SD_CloseFille(FIL *file)
+et_RET SD_CloseFille(FIL *file)
 {
     FRESULT result;
     PRINT_D("[SD] Closing file");
@@ -495,6 +204,133 @@ static et_RET SD_CloseFille(FIL *file)
 
     return RET_OK;
 }
+
+et_RET SD_WriteFille(FIL *file, const char *buf, uint16_t buf_size)
+{
+    RET_REGISTER(ret);
+
+    FRESULT result;
+    UINT    bytes_written;
+
+    result = f_write(file, buf, buf_size, &bytes_written);   
+
+    if (result != FR_OK)
+    {
+        PRINT_E("[SD] Unable to write to the file");
+        ret = SD_CloseFille(file);
+        ret = SD_UnMount();
+        return -RET_NOT_OK;
+    }
+
+    return RET_OK;
+}
+
+et_RET SD_ReadFille(FIL *file, char *buf, uint16_t buf_size)
+{
+    FRESULT result;
+    UINT    bytes_read = 0;
+
+    result = f_read(file, buf, buf_size, &bytes_read);
+
+    if (result != FR_OK)
+    {
+        PRINT_E("[SD] Unable to read file");
+        SD_CloseFille(file);
+        SD_UnMount();
+        return -RET_NOT_OK;
+    }
+
+    if (bytes_read != buf_size)
+    {
+        PRINT_E("[SD] Unable to read all bytes");
+        SD_CloseFille(file);
+        SD_UnMount();
+        return -RET_NOT_OK;
+    }
+
+    return RET_OK;
+}
+
+et_RET SD_ReadFille_WithJump(FIL *file, char *buf, uint16_t buf_size, DWORD offset)
+{
+    FRESULT result;
+    UINT    bytes_read = 0;
+
+    if (CHECK_PTR(file) || CHECK_PTR(buf))
+    {
+        PRINT_E("[SD] NULL file or buffer passed to offset read");
+        return -RET_NULL_PTR;
+    }
+
+    result = f_lseek(file, offset);
+
+    if (result != FR_OK)
+    {
+        PRINT_E("[SD] f_lseek failed: result=%d, offset=%lu",
+                (int)result, (unsigned long)offset);
+        return -RET_NOT_OK;
+    }
+
+    if (f_tell(file) != offset)
+    {
+        PRINT_E("[SD] f_lseek clipped offset: requested=%lu, actual=%lu, size=%lu",
+                (unsigned long)offset,
+                (unsigned long)f_tell(file),
+                (unsigned long)f_size(file));
+        return -RET_NOT_OK;
+    }
+
+    if ((DWORD)buf_size > f_size(file) - offset)
+    {
+        PRINT_E("[SD] Offset read exceeds file size: offset=%lu, bytes=%u, size=%lu",
+                (unsigned long)offset,
+                (unsigned int)buf_size,
+                (unsigned long)f_size(file));
+        return -RET_NOT_OK;
+    }
+
+    result = f_read(file, buf, buf_size, &bytes_read);
+
+    if (result != FR_OK)
+    {
+        PRINT_E("[SD] f_read after seek failed: result=%d, offset=%lu",
+                (int)result, (unsigned long)offset);
+        return -RET_NOT_OK;
+    }
+
+    if (bytes_read != buf_size)
+    {
+        PRINT_E("[SD] Short read after seek: requested=%u, read=%u, offset=%lu",
+                (unsigned int)buf_size,
+                (unsigned int)bytes_read,
+                (unsigned long)offset);
+        return -RET_NOT_OK;
+    }
+
+    return RET_OK;
+}
+
+et_RET SD_CreadeDir(const char *path)
+{
+    FRESULT result;
+
+    result = f_mkdir((const TCHAR *)path);
+
+    if (result != FR_OK)
+    {
+        PRINT_E("[SD] Unable to creade fir");;
+        SD_UnMount();
+        return -RET_NOT_OK;
+    }
+
+    return RET_OK;
+}
+
+/* TODO: Add public functions. */
+
+/* ************************************************************************************ */
+/* * Private Functions                                                                * */
+/* ************************************************************************************ */
 
 /* TODO: Add private functions. */
 

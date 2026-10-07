@@ -7,31 +7,27 @@
 /** * @date      02/09/2026                                                          * **/
 /** * @version   V...                                                                * **/
 /** *                                                                                * **/
-/** * Last modified on 30/09/2026                                                    * **/
+/** * Last modified on 07/10/2026                                                    * **/
 /** ********************************************************************************** **/
 
 /* ************************************************************************************ */
 /* * Private Includes                                                                 * */
 /* ************************************************************************************ */
 
-#include "Returns.h"
-#include "Ui_defines.h"
-#include "Ui_configs.h"
-#include "Ui_types.h"
-
 /* Include header file.*/
 #include "Ui.h"
 
-/* Include module configuration. */
+#include "Core/Project/Project/Modules/UI_Module/Ui_defines.h"
+#include "Ui_configs.h"
 
+/* Include module configuration. */
 #include "Core_Include.h"
 
 
 #include "fonts.h"
 #include "sd_card.h"
-#include "st7789.h"
-#include "st7789_defines.h"
-#include <stdint.h>
+#include "tim.h"
+
 
 /* TODO: Add includes. */
 
@@ -65,10 +61,13 @@
 /* * Private Defines                                                                  * */
 /* ************************************************************************************ */
 
-#define EDGE                (   5   )
-
 #define MACRO_BAR_THICKNESS (   40  )
 
+#define NO_MACRO_PRESSED    (   0   )
+
+#define MACRO_M1_PRESSED    (   1   )
+
+#define MACRO_M2_PRESSED    (   2   )
 /* TODO: Add defines. */
 
 /* ************************************************************************************ */
@@ -94,6 +93,10 @@
 /* ************************************************************************************ */
 
 static uint8_t g_encoder_pressed = ENCODER_NOT_ROTATED;
+static uint8_t g_b1_but_pressed  = BUTTON_UNPRESSED;
+static uint8_t g_b2_but_pressed  = BUTTON_UNPRESSED;
+
+static uint8_t macro_flg = NO_MACRO_PRESSED;
 
 #define GENERATE_BUTTON_VARIABLE(_name, ...)                                             \
     static uint8_t g_##_name##_pressed = BUTTON_UNPRESSED;
@@ -121,13 +124,13 @@ static bool g_initialized = false;
 
 static uint8_t g_selected_channel = 0;
 
+static FATFS ffts;
+
 /* TODO: Add global variables. */
 
 /* ************************************************************************************ */
 /* * Private Macros                                                                   * */
 /* ************************************************************************************ */
-
-
 
 /* TODO: Add macros. */
 
@@ -146,6 +149,24 @@ et_RET UI_encoder_a_but_ISR(void)
     {
         g_encoder_pressed = ENCODER_ROTATED_LEFT;
     }
+
+    return RET_OK;
+}
+
+et_RET UI_UI_b1_but_ISR(void)
+{
+    HAL_TIM_Base_Start_IT(&htim3);
+
+    macro_flg = MACRO_M1_PRESSED;
+
+    return RET_OK;
+}
+
+et_RET UI_UI_b2_but_ISR(void)
+{
+    HAL_TIM_Base_Start_IT(&htim3);
+
+    macro_flg = MACRO_M2_PRESSED;
 
     return RET_OK;
 }
@@ -170,10 +191,15 @@ et_RET UI_Initialize(void)
 
     st_ui_conf.Display_Init();
     
+    ret = SD_Mount(&ffts);
+    if (CHECK_RET_ERROR(ret))
+    {
+        return -RET_NOT_OK;
+    }
+
     g_initialized = true;
 
     ret = UI_Draw_IntroScreen();
-
     if (CHECK_RET_ERROR(ret))
     {
         return -RET_NOT_OK;
@@ -214,8 +240,7 @@ et_RET UI_Draw_IntroScreen(void)
             intro_buff[i],
             Font_16x26,
             CYAN,
-            BLACK
-        );
+            BLACK);
 
         xposition += Font_16x26.width;
         i++;
@@ -231,7 +256,6 @@ et_RET UI_Draw_IntroScreen(void)
     yposition += MACRO_BAR_THICKNESS + EDGE;
     
     i = 0;
-    
     while (iron_buff[i])
     {
         st_ui_conf.Display_DrawChar(
@@ -240,8 +264,7 @@ et_RET UI_Draw_IntroScreen(void)
             iron_buff[i],
             Font_16x26,
             CYAN,
-            BLACK
-        );
+            BLACK);
 
         xposition += Font_16x26.width;
         i++;
@@ -253,7 +276,6 @@ et_RET UI_Draw_IntroScreen(void)
     xposition += (ST7789_WIDTH / 2) + EDGE;
 
     i = 0;
-    
     while (gun_buff[i])
     {
         st_ui_conf.Display_DrawChar(
@@ -262,8 +284,7 @@ et_RET UI_Draw_IntroScreen(void)
             gun_buff[i],
             Font_16x26,
             CYAN,
-            BLACK
-        );
+            BLACK);
 
         xposition += Font_16x26.width;
         i++;
@@ -320,7 +341,39 @@ et_RET UI_Refresh_SelectedChannel()
     return RET_OK;
 }
 
-et_RET UI_Draw_IronScreen(void)
+void UI_DrawMacroValue(uint16_t x, uint16_t y, uint16_t value)
+{
+    char value_text[5] = {' ', ' ', ' ', 'C', '\0'};
+    const uint16_t text_width = 4U * Font_11x18.width;
+    uint16_t text_x = x + (80U - text_width) / 2U;
+
+    if (value > 999U)
+    {
+        value = 999U;
+    }
+
+    if (value >= 100U)
+    {
+        value_text[0] = (char)('0' + value / 100U);
+    }
+    if (value >= 10U)
+    {
+        value_text[1] = (char)('0' + (value / 10U) % 10U);
+    }
+    value_text[2] = (char)('0' + value % 10U);
+
+    for (uint8_t index = 0U; index < 4U; index++)
+    {
+        st_ui_conf.Display_DrawChar(text_x + index * Font_11x18.width,
+                                    y,
+                                    value_text[index],
+                                    Font_11x18,
+                                    BLACK,
+                                    CYAN);
+    }
+}
+
+et_RET UI_Draw_IronScreen(uint16_t macro_m1, uint16_t macro_m2)
 {
     char m1[] = "M1";
     char m2[] = "M2";    
@@ -353,39 +406,34 @@ et_RET UI_Draw_IronScreen(void)
 
     while (m1[i])
     {
-
-
-        st_ui_conf.Display_DrawChar(
-                                x_position + 50,
-                                ST7789_HEIGHT - 2 * EDGE - 50 + EDGE,
-                                m1[i],
-                                Font_11x18,
-                                BLACK,
-                                CYAN
-                            );
+        st_ui_conf.Display_DrawChar(x_position + 50,
+                                    ST7789_HEIGHT - 2 * EDGE - 50 + EDGE,
+                                    m1[i],
+                                    Font_11x18,
+                                    BLACK,
+                                    CYAN);
         
-        st_ui_conf.Display_DrawChar(
-                        x_position + ST7789_WIDTH - 50 - 80,
-                        ST7789_HEIGHT - 2 * EDGE - 50 + EDGE,
-                        m2[i],
-                        Font_11x18,
-                        BLACK,
-                        CYAN
-                    );
+        st_ui_conf.Display_DrawChar(x_position + ST7789_WIDTH - 50 - 80,
+                                    ST7789_HEIGHT - 2 * EDGE - 50 + EDGE,
+                                    m2[i],
+                                    Font_11x18,
+                                    BLACK,
+                                    CYAN);
 
         x_position += Font_11x18.width;
+
         i++;
     }
 
+    UI_DrawMacroValue(50U,
+                      ST7789_HEIGHT - 2U * EDGE - 50U + 27U,
+                      macro_m1);
+    UI_DrawMacroValue(ST7789_WIDTH - 50U - 80U,
+                      ST7789_HEIGHT - 2U * EDGE - 50U + 27U,
+                      macro_m2);
+
     return RET_OK;
 }
-
-#define GENERATE_BUTTON_CLEAR_LOGGEDSTATE_FUNC_IMPLEMENTATION(_name, ...)                \
-    void UI_##_name##_clear_logged_state(void)                                           \
-    {                                                                                    \
-        g_##_name##_pressed = BUTTON_UNPRESSED;                                          \
-    }
-FOREACH_BUTTON(GENERATE_BUTTON_CLEAR_LOGGEDSTATE_FUNC_IMPLEMENTATION)
 
 /* TODO: Add public functions. */
 
@@ -403,9 +451,34 @@ void UI_encoder_but_clear_logged_state(void)
     g_encoder_pressed = ENCODER_NOT_ROTATED; 
 }
 
+uint8_t UI_b1_but_get_logged_state(void)
+{
+    return g_b1_but_pressed; 
+}
+
+void UI_b1_but_clear_logged_state(void)
+{
+    g_b1_but_pressed = BUTTON_UNPRESSED; 
+}
+
+uint8_t UI_b2_but_get_logged_state(void)
+{
+    return g_b2_but_pressed; 
+}
+
+void UI_b2_but_clear_logged_state(void)
+{
+    g_b2_but_pressed = BUTTON_UNPRESSED; 
+}
+
 uint8_t UI_Get_SelectedChannel()
 {
     return g_selected_channel;
+}
+
+uint8_t UI_Set_BuzzerState(uint8_t state)
+{
+    st_ui_conf.Set_Pin(BUZZER_PIN, BUZZER_PORT, state);
 }
 
 #define GENERATE_BUTTON_GET_LOGGEDSTATE_FUNC_IMPLEMENTATION(_name, ...)                  \
@@ -422,16 +495,106 @@ FOREACH_BUTTON(GENERATE_BUTTON_GET_LOGGEDSTATE_FUNC_IMPLEMENTATION)
     }
 FOREACH_BUTTON(GENERATE_BUTTON_SET_LOGGEDSTATE_FUNC_IMPLEMENTATION)
 
-uint8_t UI_Set_BuzzerState(uint8_t state)
-{
-    st_ui_conf.Set_Pin(BUZZER_PIN, BUZZER_PORT, state);
-}
+#define GENERATE_BUTTON_CLEAR_LOGGEDSTATE_FUNC_IMPLEMENTATION(_name, ...)                \
+    void UI_##_name##_clear_logged_state(void)                                           \
+    {                                                                                    \
+        g_##_name##_pressed = BUTTON_UNPRESSED;                                          \
+    }
+FOREACH_BUTTON(GENERATE_BUTTON_CLEAR_LOGGEDSTATE_FUNC_IMPLEMENTATION)
 
 /* TODO: Add Get/Set functions. */
 
 /* ************************************************************************************ */
 /* * Private Functions                                                                * */
 /* ************************************************************************************ */
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+
+    //HAL_TIM_Base_Stop_IT(&htim3);
+    // __HAL_TIM_SET_COUNTER(&htim3, 0);
+    //HAL_TIM_Base_Start_IT(&htim3);
+
+    //UI_Set_BuzzerState(BUZZER_ON);
+
+    switch (GPIO_Pin) 
+    {
+        case (1 << ENCODER_A_PIN):
+        UI_encoder_a_but_ISR();
+        break;
+
+        case (1 << ENCODER_C_PIN):
+        UI_encoder_c_but_set_logged_state();
+        break;
+
+        case (1 << MACRO_B1_PIN):
+        //UI_b1_but_set_logged_state();
+        UI_UI_b1_but_ISR();
+        break;
+
+        case (1 << MACRO_B2_PIN):
+        //UI_b2_but_set_logged_state();
+        UI_UI_b2_but_ISR();
+        break;
+
+        /*case (1 << MACRO_B3_PIN):
+        UI_b3_but_set_logged_state();
+        break;*/
+
+        case (1 << IRON_TILTI_SENSOR_PIN):
+        UI_iron_tilt_sen_get_logged_state();
+        break;
+
+        case (1 << HEAT_GUN_MAG_SENSOR_PIN):
+        UI_heat_gun_sen_get_logged_state();
+        break;
+
+        case (1 << VACCUM_PUMP_TRIGGER_PIN):
+        UI_vaccum_pump_trg_set_logged_state();
+        break;
+
+        case (1 << ZERO_CROSS_PIN):
+        UI_zero_croos_sen_set_logged_state();
+        break;
+    }
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM3)
+    {
+        HAL_TIM_Base_Stop_IT(htim);
+        __HAL_TIM_SET_COUNTER(htim, 0);
+
+        if (macro_flg == MACRO_M1_PRESSED)
+        {
+            if(st_ui_conf.Get_Pin(MACRO_B1_PIN, MACRO_B1_PORT) == BUTTON_PRESSED)
+            {
+                g_b1_but_pressed = BUTTON_LONG_PRESSED;
+            }
+
+            else 
+            {
+                g_b1_but_pressed = BUTTON_PRESSED;  
+            }
+        }
+
+        else if (macro_flg == MACRO_M2_PRESSED)
+        {
+            if(st_ui_conf.Get_Pin(MACRO_B2_PIN, MACRO_B2_PORT) == BUTTON_PRESSED)
+            {
+                g_b2_but_pressed = BUTTON_LONG_PRESSED;
+            }
+
+            else 
+            {
+                g_b2_but_pressed = BUTTON_PRESSED;  
+            }
+        }
+
+        macro_flg = NO_MACRO_PRESSED;
+    }
+}
 
 /* TODO: Add private functions. */
 
