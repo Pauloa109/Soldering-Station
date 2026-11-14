@@ -261,6 +261,14 @@ static void HexFontBufferToUint16(const char *buff,
                                   uint16_t *out,
                                   uint16_t height);
 
+static uint8_t ST7789_WriteCharFromFont(uint16_t x,
+                                        uint16_t y,
+                                        char ch,
+                                        FontDef font,
+                                        uint16_t color,
+                                        uint16_t bgcolor,
+                                        FIL *font_file);
+
 /* TODO: Add private function prototypes. */
 
 /* ************************************************************************************ */
@@ -569,104 +577,37 @@ void ST7789_WriteChar(uint16_t x,
                       uint16_t color,
                       uint16_t bgcolor)
 {
-    uint32_t i, b, j;
-
-    ST7789_SetAddressWindow(
-        x,
-        y,
-        x + font.width - 1,
-        y + font.height - 1
-    );
-
     #if (ST7789_USE_INTERNAL_STORAGE == ENABLED)
-
-        for (i = 0; i < font.height; i++)
-        {
-            b = font.data[(ch - 32) * font.height + i];
-
-            for (j = 0; j < font.width; j++)
-            {
-                uint16_t pixel_color;
-
-                if ((b << j) & 0x8000)
-                    pixel_color = color;
-                else
-                    pixel_color = bgcolor;
-
-                uint8_t data[] =
-                {
-                    pixel_color >> 8,
-                    pixel_color & 0xFF
-                };
-
-                ST7789_WriteData(data, sizeof(data));
-            }
-        }
-
+        (void)ST7789_WriteCharFromFont(x, y, ch, font, color, bgcolor, NULL);
     #else
-
         FIL file;
-        char buff[font.height * 8UL];
-        uint16_t decoded_buff[font.height];
 
         if (SD_OpenFille(&file, font.path, FILE_READ) != RET_OK)
         {
             return;
         }
 
-        unsigned long offset =
-            (unsigned long)(ch - 32) *
-            (font.height * 8UL + 2UL);
-
-        if (SD_ReadFille_WithJump(
-                &file,
-                buff,
-                font.height * 8UL,
-                offset) != RET_OK)
-        {
-            (void)SD_CloseFille(&file);
-            return;
-        }
-
-        if (SD_CloseFille(&file) != RET_OK)
-        {
-            return;
-        }
-
-        HexFontBufferToUint16(
-            buff,
-            decoded_buff,
-            font.height
-        );
-
-        for (i = 0; i < font.height; i++)
-        {
-            b = decoded_buff[i];
-
-            for (j = 0; j < font.width; j++)
-            {
-                uint16_t pixel_color;
-
-                if ((b << j) & 0x8000)
-                    pixel_color = color;
-                else
-                    pixel_color = bgcolor;
-
-                uint8_t data[] =
-                {
-                    pixel_color >> 8,
-                    pixel_color & 0xFF
-                };
-
-                ST7789_WriteData(data, sizeof(data));
-            }
-        }
-
+        (void)ST7789_WriteCharFromFont(x, y, ch, font, color, bgcolor, &file);
+        (void)SD_CloseFille(&file);
     #endif
 }
 
 void ST7789_WriteString(uint16_t x, uint16_t y, const char *str, FontDef font, uint16_t color, uint16_t bgcolor)
 {
+    if ((str == NULL) || (*str == '\0'))
+    {
+        return;
+    }
+
+    #if (ST7789_USE_INTERNAL_STORAGE == DISABLED)
+        FIL file;
+
+        if (SD_OpenFille(&file, font.path, FILE_READ) != RET_OK)
+        {
+            return;
+        }
+    #endif
+
     while (*str)
     {
         if (x + font.width >= ST7789_WIDTH)
@@ -687,11 +628,22 @@ void ST7789_WriteString(uint16_t x, uint16_t y, const char *str, FontDef font, u
             }
         }
 
-        ST7789_WriteChar(x, y, *str, font, color, bgcolor);
+        #if (ST7789_USE_INTERNAL_STORAGE == ENABLED)
+            (void)ST7789_WriteCharFromFont(x, y, *str, font, color, bgcolor, NULL);
+        #else
+            if (!ST7789_WriteCharFromFont(x, y, *str, font, color, bgcolor, &file))
+            {
+                break;
+            }
+        #endif
 
         x += font.width;
         str++;
     }
+
+    #if (ST7789_USE_INTERNAL_STORAGE == DISABLED)
+        (void)SD_CloseFille(&file);
+    #endif
 }
 void ST7789_DrawFilledRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
@@ -941,6 +893,83 @@ static void ST7789_WriteSmallData(uint8_t data)
     }
 
     ST7789_UNSELECT();
+}
+
+static uint8_t ST7789_WriteCharFromFont(uint16_t x,
+                                        uint16_t y,
+                                        char ch,
+                                        FontDef font,
+                                        uint16_t color,
+                                        uint16_t bgcolor,
+                                        FIL *font_file)
+{
+    uint32_t i, b, j;
+    uint32_t data_index = 0U;
+    size_t glyph_size = (size_t)font.width * font.height * 2U;
+
+    #if (ST7789_USE_INTERNAL_STORAGE == ENABLED)
+        (void)font_file;
+    #else
+        char buff[font.height * 8UL];
+        uint16_t decoded_buff[font.height];
+        unsigned long offset =
+            (unsigned long)(ch - 32) * (font.height * 8UL + 2UL);
+
+        if ((font_file == NULL) ||
+            (SD_ReadFille_WithJump(font_file,
+                                   buff,
+                                   font.height * 8UL,
+                                   offset) != RET_OK))
+        {
+            return 0U;
+        }
+
+        HexFontBufferToUint16(buff, decoded_buff, font.height);
+    #endif
+
+    ST7789_SetAddressWindow(
+        x,
+        y,
+        x + font.width - 1,
+        y + font.height - 1
+    );
+
+    for (i = 0; i < font.height; i++)
+    {
+        #if (ST7789_USE_INTERNAL_STORAGE == ENABLED)
+            b = font.data[(ch - 32) * font.height + i];
+        #else
+            b = decoded_buff[i];
+        #endif
+
+        for (j = 0; j < font.width; j++)
+        {
+            uint16_t pixel_color = ((b << j) & 0x8000U) ? color : bgcolor;
+
+            if (glyph_size <= sizeof(disp_buf))
+            {
+                disp_buf[data_index++] = (uint8_t)(pixel_color >> 8);
+                disp_buf[data_index++] = (uint8_t)pixel_color;
+            }
+            else
+            {
+                uint8_t pixel_data[] =
+                {
+                    (uint8_t)(pixel_color >> 8),
+                    (uint8_t)pixel_color
+                };
+
+                ST7789_WriteData(pixel_data, sizeof(pixel_data));
+            }
+        }
+    }
+
+    if (glyph_size <= sizeof(disp_buf))
+    {
+        ST7789_WriteData(disp_buf, glyph_size);
+    }
+
+    return 1U;
 }
 
 static void ST7789_SetAddressWindow(uint16_t x0,
